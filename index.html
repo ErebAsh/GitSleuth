@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GitHub Activity Timing Tracker</title>
+    <meta name="description" content="Track the exact creation time of GitHub Pull Requests and Issues by a specific user.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Flatpickr Calendar CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <link rel="stylesheet" type="text/css" href="https://npmcdn.com/flatpickr/dist/themes/dark.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="background-elements">
+        <div class="glow-orb orb-1"></div>
+        <div class="glow-orb orb-2"></div>
+    </div>
+    
+    <div class="app-container">
+        <header>
+            <h1>Activity Tracker</h1>
+            <p>Find the exact timing and date of Pull Requests and Issues created by any GitHub user.</p>
+        </header>
+
+        <main>
+            <div class="search-card glass-panel">
+                <form id="search-form">
+                    <div class="input-group">
+                        <label for="username">GitHub Username <span class="required">*</span></label>
+                        <input type="text" id="username" placeholder="e.g., torvalds" required>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="type-filter">Activity Type</label>
+                        <select id="type-filter">
+                            <option value="both">Both (PRs & Issues)</option>
+                            <option value="pr">Pull Requests Only</option>
+                            <option value="issue">Issues Only</option>
+                        </select>
+                    </div>
+
+                    <div class="input-group" style="display: flex; gap: 1rem;">
+                        <div style="flex: 1;">
+                            <label for="start-date">Start Date (Optional)</label>
+                            <input type="date" id="start-date">
+                        </div>
+                        <div style="flex: 1;">
+                            <label for="end-date">End Date (Optional)</label>
+                            <input type="date" id="end-date">
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="token">Personal Access Token (Optional)</label>
+                        <input type="password" id="token" placeholder="To avoid rate limits">
+                        <small>Data is fetched directly from your browser; your token is not stored.</small>
+                    </div>
+                    
+                    <button type="submit" id="search-btn" class="primary-btn">
+                        <span>Search Activity</span>
+                        <div class="loader hidden"></div>
+                    </button>
+                </form>
+            </div>
+
+            <div class="results-container hidden" id="results-container">
+                <div class="results-header">
+                    <h2 id="results-title">Results</h2>
+                    <span id="results-count" class="badge">0 found</span>
+                </div>
+                <div class="timeline" id="timeline">
+                    <!-- Results will be populated here -->
+                </div>
+                
+                <div class="load-more-container hidden" id="load-more-container" style="text-align: center; margin-top: 2rem;">
+                    <button id="load-more-btn" class="primary-btn" style="width: auto; padding: 0.75rem 2rem; display: inline-flex;">
+                        <span>Load Older Activity</span>
+                        <div class="loader hidden"></div>
+                    </button>
+                </div>
+            </div>
+            
+            <div id="error-message" class="error-message hidden">
+                <!-- Error text will appear here -->
+            </div>
+        </main>
+    </div>
+
+    <!-- Flatpickr Calendar JS -->
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="script.js"></script>
+</body>
+</html>
