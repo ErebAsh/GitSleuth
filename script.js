@@ -251,6 +251,28 @@ document.addEventListener('DOMContentLoaded', () => {
                     <div class="exact-time" title="ISO: ${isoString}">
                         ⏱️ ${isPR ? 'Opened' : 'Created'}: ${readableDate}
                     </div>
+                    ${(() => {
+                        if (item.state === 'closed' && item.closed_at) {
+                            let actionVerb = 'Closed';
+                            let icon = '🔴';
+                            let closedAtStr = item.closed_at;
+                            
+                            if (isPR && item.pull_request && item.pull_request.merged_at) {
+                                actionVerb = 'Merged';
+                                icon = '🔀';
+                                closedAtStr = item.pull_request.merged_at;
+                            }
+                            
+                            const closedDateObj = new Date(closedAtStr);
+                            const closedReadableDate = closedDateObj.toLocaleString(undefined, options);
+                            return `
+                            <div class="exact-time" title="ISO: ${closedDateObj.toISOString()}" style="margin-top: 0.5rem; margin-left: 0.5rem;">
+                                ${icon} ${actionVerb}: ${closedReadableDate}
+                            </div>
+                            `;
+                        }
+                        return '';
+                    })()}
                 </div>
             `;
             
