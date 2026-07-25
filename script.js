@@ -249,7 +249,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 
                 <div>
                     <div class="exact-time" title="ISO: ${isoString}">
-                        ⏱️ Created: ${readableDate}
+                        ⏱️ ${isPR ? 'Opened' : 'Created'}: ${readableDate}
                     </div>
                 </div>
             `;
