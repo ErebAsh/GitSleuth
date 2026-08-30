@@ -72,7 +72,18 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    loadMoreBtn.addEventListener('click', async () => {
+    let isFetching = false;
+    const observer = new IntersectionObserver((entries) => {
+        if (entries[0].isIntersecting && !isFetching && !loadMoreContainer.classList.contains('hidden')) {
+            loadMoreData();
+        }
+    }, { rootMargin: '200px' });
+
+    observer.observe(loadMoreContainer);
+
+    async function loadMoreData() {
+        if (isFetching) return;
+        isFetching = true;
         currentPage++;
         setLoading(true, loadMoreBtn, loadMoreText, loadMoreLoader);
         hideError();
@@ -85,7 +96,13 @@ document.addEventListener('DOMContentLoaded', () => {
             currentPage--; // revert page if failed
         } finally {
             setLoading(false, loadMoreBtn, loadMoreText, loadMoreLoader);
+            isFetching = false;
         }
+    }
+
+    // Keep click event as a fallback for users if observer fails to trigger
+    loadMoreBtn.addEventListener('click', () => {
+        if (!isFetching) loadMoreData();
     });
 
     function setLoading(isLoading, btnObj, textObj, loaderObj) {
