@@ -41,6 +41,16 @@ body {
     -webkit-font-smoothing: antialiased;
 }
 
+/* Base App Layout Container */
+.app-layout {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+    position: relative;
+    z-index: 1;
+}
+
 /* 3D Tubes Canvas Container (Hero Scoped - Constrains parent size for WebGL) */
 .tubes-canvas-container {
     position: absolute;
@@ -1196,8 +1206,44 @@ small {
     color: var(--accent);
 }
 
-/* Responsive adjustments */
-@media (max-width: 868px) {
+/* ====================================================
+   COMPREHENSIVE RESPONSIVE DESIGN SYSTEM
+   Optimized for all mobile screen sizes (320px - 768px+)
+   ==================================================== */
+
+/* --- Tablet & Medium Screens (<= 992px) --- */
+@media (max-width: 992px) {
+    .features-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1.25rem;
+    }
+
+    .info-cards-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1.25rem;
+    }
+}
+
+/* --- Mobile Landscape & Large Smartphones (<= 768px) --- */
+@media (max-width: 768px) {
+    /* Layout & Spacing */
+    .app-layout {
+        padding: 0 1.15rem;
+    }
+
+    /* Navbar */
+    .navbar {
+        padding: 0.75rem 1rem;
+    }
+
+    .nav-container {
+        position: relative;
+    }
+
+    .brand-name {
+        font-size: 1.2rem;
+    }
+
     .brand-badge {
         display: none !important;
     }
@@ -1205,56 +1251,458 @@ small {
     .nav-links {
         display: none;
         position: absolute;
-        top: 100%;
-        left: 0;
-        width: 100%;
-        background: rgba(7, 9, 14, 0.95);
-        backdrop-filter: blur(20px);
+        top: calc(100% + 0.75rem);
+        left: -1rem;
+        right: -1rem;
+        width: calc(100% + 2rem);
+        background: rgba(7, 9, 14, 0.96);
+        backdrop-filter: blur(24px);
+        -webkit-backdrop-filter: blur(24px);
         flex-direction: column;
-        padding: 1.5rem;
+        padding: 1.25rem 1.5rem;
         border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        gap: 1rem;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.85);
+        gap: 0.6rem;
+        z-index: 200;
     }
 
     .nav-links.active {
         display: flex;
+        animation: mobileNavFade 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    @keyframes mobileNavFade {
+        from { opacity: 0; transform: translateY(-8px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    .nav-link {
+        padding: 0.7rem 1rem;
+        font-size: 1rem;
+        border-radius: 8px;
+        width: 100%;
+        display: block;
+        transition: background 0.2s ease, color 0.2s ease;
+    }
+
+    .nav-link:hover, .nav-link.active {
+        background: rgba(0, 242, 254, 0.08);
+    }
+
+    .nav-link.active::after {
+        display: none;
     }
 
     .nav-toggle {
         display: flex;
+        width: 38px;
+        height: 38px;
+        align-items: center;
+        justify-content: center;
+        border-radius: 8px;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
     }
 
-    .neon-pill-btn .neon-btn-text {
+    .nav-toggle span {
+        display: block;
+        width: 18px;
+        height: 2px;
+        background-color: var(--text-main);
+        border-radius: 2px;
+        transition: all 0.2s ease;
+    }
+
+    .nav-actions {
+        gap: 0.6rem;
+    }
+
+    .nav-actions .cta-primary-btn {
+        padding: 0.45rem 0.95rem !important;
+        font-size: 0.82rem !important;
+    }
+
+    .api-status-badge {
+        display: none !important;
+    }
+
+    .github-btn {
+        padding: 0.45rem 0.85rem;
+        font-size: 0.8rem;
+    }
+
+    /* Hero Section */
+    .hero-section {
+        min-height: auto;
+        padding: 3rem 0.25rem 2.5rem 0.25rem;
+    }
+
+    .hero-badge {
+        font-size: 0.78rem;
+        padding: 0.35rem 0.9rem;
+        margin-bottom: 1.25rem;
+        max-width: 95%;
+    }
+
+    .hero-headline {
+        font-size: clamp(2.1rem, 8vw, 3.2rem);
+        line-height: 1.18;
+        letter-spacing: -0.03em;
+        margin-bottom: 1.2rem;
+    }
+
+    .hero-description {
+        font-size: 0.98rem;
+        line-height: 1.6;
+        margin-bottom: 1.8rem;
+        padding: 0 0.5rem;
+    }
+
+    .hero-cta-group {
+        flex-direction: column;
+        width: 100%;
+        max-width: 320px;
+        margin: 0 auto 2.2rem auto;
+        gap: 0.85rem;
+    }
+
+    .cta-primary-btn, .cta-secondary-btn {
+        width: 100%;
+        justify-content: center;
+        padding: 0.9rem 1.5rem;
+        font-size: 1rem;
+        border-radius: 12px;
+    }
+
+    /* Hero Stats Grid (Mobile 3-Col Compact Pills) */
+    .hero-stats-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 0.6rem;
+        width: 100%;
+    }
+
+    .stat-card {
+        padding: 1rem 0.4rem;
+        border-radius: 12px;
+        gap: 0.3rem;
+    }
+
+    .stat-number {
+        font-size: clamp(1.15rem, 4.5vw, 1.55rem);
+    }
+
+    .stat-label {
+        font-size: clamp(0.64rem, 2.3vw, 0.75rem);
+        line-height: 1.3;
+    }
+
+    /* Section Headers */
+    .section-header {
+        margin-bottom: 2rem;
+        padding: 0 0.5rem;
+    }
+
+    .section-title {
+        font-size: 1.75rem;
+    }
+
+    .section-subtitle {
+        font-size: 0.95rem;
+    }
+
+    /* Features Section */
+    .features-section {
+        padding: 3rem 0;
+    }
+
+    .features-grid {
+        grid-template-columns: 1fr;
+        gap: 1.15rem;
+    }
+
+    .feature-card {
+        padding: 1.6rem 1.3rem;
+        border-radius: 14px;
+    }
+
+    /* Launch Card */
+    .launch-card {
+        padding: 2.75rem 1.25rem;
+        border-radius: 16px;
+    }
+
+    .launch-card h2 {
+        font-size: 1.65rem;
+        margin-bottom: 0.85rem;
+    }
+
+    .launch-card p {
+        font-size: 0.95rem;
+        margin-bottom: 1.6rem;
+    }
+
+    .feature-pills-wrap {
+        gap: 0.5rem;
+    }
+
+    .feature-pill {
+        padding: 0.4rem 0.85rem;
+        font-size: 0.8rem;
+    }
+
+    /* Search & Workspace Card */
+    .tracker-section {
+        padding: 2.5rem 0;
+    }
+
+    .search-card {
+        padding: 1.6rem 1.15rem;
+        border-radius: 14px;
+        margin: 0 auto;
+    }
+
+    .form-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+        margin-bottom: 1rem;
+    }
+
+    .date-grid {
+        grid-template-columns: 1fr;
+    }
+
+    /* Font size 16px prevents iOS Safari from automatically zooming into inputs */
+    input, select {
+        font-size: 16px;
+        padding: 0.85rem 1rem;
+        border-radius: 10px;
+    }
+
+    .input-wrapper input {
+        padding-left: 2.3rem;
+    }
+
+    .label-with-hint {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.35rem;
+    }
+
+    .token-helper-box {
+        padding: 0.75rem 0.85rem;
+        font-size: 0.78rem;
+        gap: 0.6rem;
+    }
+
+    .primary-btn {
+        padding: 0.95rem 1.25rem;
+        font-size: 1rem;
+        border-radius: 10px;
+    }
+
+    /* Results Timeline */
+    .results-container {
+        margin-top: 2rem;
+    }
+
+    .results-header {
+        margin-bottom: 1.15rem;
+    }
+
+    #results-title {
+        font-size: 1.25rem;
+    }
+
+    .timeline {
+        gap: 0.95rem;
+    }
+
+    .timeline-item {
+        padding: 1.2rem 1rem;
+        border-radius: 12px;
+        gap: 0.75rem;
+    }
+
+    .item-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+
+    .item-title {
+        font-size: 1rem;
+    }
+
+    .item-type {
+        font-size: 0.72rem;
+        padding: 0.2rem 0.55rem;
+    }
+
+    .item-meta {
+        gap: 0.65rem 1rem;
+        font-size: 0.8rem;
+    }
+
+    .exact-time {
+        font-size: 0.78rem;
+        padding: 0.4rem 0.7rem;
+        width: 100%;
+        word-break: break-all;
+    }
+
+    /* Privacy & Architecture Cards */
+    .info-section {
+        padding: 3rem 0;
+    }
+
+    .info-cards-grid {
+        grid-template-columns: 1fr;
+        gap: 1.15rem;
+    }
+
+    .info-box {
+        padding: 1.6rem 1.25rem;
+        border-radius: 14px;
+    }
+
+    .info-box h4 {
+        font-size: 1.1rem;
+    }
+
+    .info-box p {
+        font-size: 0.88rem;
+    }
+
+    /* Support Section */
+    .support-section {
+        padding: 2.5rem 0;
+    }
+
+    .support-card {
+        padding: 2.75rem 1.25rem;
+        border-radius: 16px;
+    }
+
+    .support-content h2 {
+        font-size: 1.65rem;
+    }
+
+    .support-actions {
+        flex-direction: column;
+        width: 100%;
+        max-width: 280px;
+        margin: 0 auto;
+        gap: 0.75rem;
+    }
+
+    .support-actions a {
+        width: 100%;
+        justify-content: center;
+    }
+
+    /* Footers */
+    .app-footer {
+        margin-top: 3rem;
+        padding-top: 2rem;
+    }
+
+    .footer-content {
+        flex-direction: column;
+        text-align: center;
+        gap: 1.5rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .footer-links {
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 0.85rem 1.25rem;
+    }
+
+    .workspace-footer {
+        margin-top: 3rem;
+        padding: 1.5rem 0;
+    }
+
+    .workspace-footer-content {
+        flex-direction: column;
+        text-align: center;
+        gap: 0.85rem;
+    }
+
+    .ws-left, .ws-right {
+        flex-direction: column;
+        align-items: center;
+        gap: 0.35rem;
+    }
+
+    .ws-divider {
         display: none;
     }
+}
 
-    .neon-pill-btn {
-        padding: 0.5rem;
+/* --- Ultra-Compact Smartphones (<= 400px - iPhone SE, Galaxy Z Flip, etc.) --- */
+@media (max-width: 400px) {
+    .app-layout {
+        padding: 0 0.85rem;
     }
 
-    .form-grid, .date-grid {
-        grid-template-columns: 1fr;
+    .navbar {
+        padding: 0.65rem 0.85rem;
+    }
+
+    .brand-name {
+        font-size: 1.1rem;
+    }
+
+    .nav-actions .cta-primary-btn {
+        padding: 0.38rem 0.75rem !important;
+        font-size: 0.75rem !important;
+    }
+
+    .github-btn {
+        padding: 0.38rem 0.65rem;
+        font-size: 0.75rem;
+    }
+
+    .hero-headline {
+        font-size: 1.95rem;
     }
 
     .hero-stats-grid {
         grid-template-columns: 1fr;
+        gap: 0.5rem;
     }
 
-    .hero-section {
-        padding-top: 2rem;
+    .stat-card {
+        padding: 0.85rem 0.75rem;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        text-align: left;
+    }
+
+    .stat-number {
+        font-size: 1.35rem;
+    }
+
+    .stat-label {
+        font-size: 0.78rem;
     }
 
     .search-card {
-        padding: 1.75rem 1.25rem;
+        padding: 1.35rem 0.9rem;
     }
-}
 
-@media (max-width: 480px) {
-    .nav-actions .cta-primary-btn {
-        padding: 0.4rem 0.85rem !important;
-        font-size: 0.8rem !important;
+    .feature-card {
+        padding: 1.35rem 1rem;
     }
-    .api-status-badge {
-        display: none !important;
+
+    .info-box {
+        padding: 1.35rem 1rem;
+    }
+
+    .support-card {
+        padding: 2.2rem 1rem;
     }
 }
