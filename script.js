@@ -72,18 +72,124 @@ document.addEventListener('DOMContentLoaded', () => {
             const module = await import('https://cdn.jsdelivr.net/npm/threejs-components@0.0.19/build/cursors/tubes1.min.js');
             const TubesCursor = module.default;
 
-            // Initialize with cyber/developer neon colors
+            // Responsive orbit parameters for mobile screens
+            const isMobile = window.innerWidth <= 768 || ('ontouchstart' in window);
             tubesApp = TubesCursor(canvas, {
                 tubes: {
                     colors: neonPalettes[0].tubes,
                     lights: {
-                        intensity: 220,
+                        intensity: 240,
                         colors: neonPalettes[0].lights
                     }
-                }
+                },
+                // Responsive orbit amplitude
+                sleepRadiusX: isMobile ? 360 : 180,
+                sleepRadiusY: isMobile ? 480 : 120,
+                sleepTimeScale1: 0.8,
+                sleepTimeScale2: 1.5
             });
 
-            console.log("3D Interactive Tubes Background initialized.");
+            // ----------------------------------------------------
+            // Mobile-Only Fake Pointer Motion Engine
+            // ----------------------------------------------------
+            // Desktop: Hardware mouse cursor naturally drives the 3D tubes.
+            // Mobile: Since mobile touchscreens have no continuous cursor,
+            // this engine simulates smooth, continuous pointer movement across
+            // the screen by dispatching synthetic pointermove events.
+            // ----------------------------------------------------
+            let fakePointerStartTime = performance.now();
+            let isUserTouching = false;
+            let touchResumeTimeout = null;
+
+            function onTouchStart() {
+                isUserTouching = true;
+                if (touchResumeTimeout) clearTimeout(touchResumeTimeout);
+            }
+
+            function onTouchEnd() {
+                if (touchResumeTimeout) clearTimeout(touchResumeTimeout);
+                // Reset hover state so tubes don't freeze at last touch coordinate
+                try {
+                    document.body.dispatchEvent(new PointerEvent('pointerleave', { bubbles: true }));
+                } catch (e) {}
+                touchResumeTimeout = setTimeout(() => {
+                    isUserTouching = false;
+                }, 800);
+            }
+
+            window.addEventListener('touchstart', onTouchStart, { passive: true });
+            window.addEventListener('touchend', onTouchEnd, { passive: true });
+            window.addEventListener('touchcancel', onTouchEnd, { passive: true });
+
+            function isMobileScreen() {
+                return window.innerWidth <= 768 ||
+                    (window.matchMedia && window.matchMedia('(max-width: 768px), (pointer: coarse)').matches);
+            }
+
+            function runMobileFakePointer() {
+                // Strictly run only on mobile screen viewports
+                if (isMobileScreen() && !isUserTouching && canvas) {
+                    const rect = canvas.getBoundingClientRect();
+                    if (rect.width > 0 && rect.height > 0) {
+                        const elapsed = (performance.now() - fakePointerStartTime) * 0.001;
+
+                        // Continuous organic sweep across mobile screen area
+                        const t = elapsed * 0.85;
+                        const padX = rect.width * 0.12;
+                        const padY = Math.min(rect.height * 0.15, 90);
+
+                        const minX = rect.left + padX;
+                        const maxX = rect.left + rect.width - padX;
+                        const minY = Math.max(rect.top + padY, 40);
+                        const maxY = Math.min(rect.top + rect.height - padY, window.innerHeight - 50);
+
+                        const midX = (minX + maxX) / 2;
+                        const spanX = Math.max(20, (maxX - minX) / 2);
+                        const midY = (minY + maxY) / 2;
+                        const spanY = Math.max(20, (maxY - minY) / 2);
+
+                        const fakeX = midX + spanX * (Math.sin(t * 0.8) * 0.75 + Math.cos(t * 1.5 + 0.6) * 0.25);
+                        const fakeY = midY + spanY * (Math.cos(t * 0.6) * 0.72 + Math.sin(t * 1.25 + 1.1) * 0.28);
+
+                        // Construct cross-browser compatible event
+                        let pEvent;
+                        try {
+                            pEvent = new PointerEvent('pointermove', {
+                                clientX: fakeX,
+                                clientY: fakeY,
+                                screenX: fakeX,
+                                screenY: fakeY,
+                                bubbles: true,
+                                cancelable: true,
+                                pointerType: 'mouse',
+                                isPrimary: true
+                            });
+                        } catch (err) {
+                            pEvent = new MouseEvent('mousemove', {
+                                clientX: fakeX,
+                                clientY: fakeY,
+                                bubbles: true,
+                                cancelable: true
+                            });
+                        }
+
+                        // Explicitly guarantee clientX & clientY values
+                        try {
+                            Object.defineProperty(pEvent, 'clientX', { value: fakeX });
+                            Object.defineProperty(pEvent, 'clientY', { value: fakeY });
+                        } catch (e) {}
+
+                        document.body.dispatchEvent(pEvent);
+                        canvas.dispatchEvent(pEvent);
+                    }
+                }
+                requestAnimationFrame(runMobileFakePointer);
+            }
+
+            // Start mobile fake pointer movement loop
+            runMobileFakePointer();
+
+            console.log("3D Interactive Tubes: Mobile fake pointer motion engine active.");
         } catch (error) {
             console.warn("3D Tubes WebGL could not load (falling back to ambient CSS glow):", error);
         }
@@ -97,22 +203,6 @@ document.addEventListener('DOMContentLoaded', () => {
         
         tubesApp.tubes.setColors(tubesCols);
         tubesApp.tubes.setLightsColors(lightsCols);
-
-        // Flash sparkle button
-        if (randomizeNeonBtn) {
-            randomizeNeonBtn.style.transform = 'scale(0.95)';
-            setTimeout(() => {
-                randomizeNeonBtn.style.transform = '';
-            }, 150);
-        }
-    }
-
-    // Trigger randomization via button
-    if (randomizeNeonBtn) {
-        randomizeNeonBtn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            randomizeColors();
-        });
     }
 
     // Trigger randomization when clicking anywhere on background/hero
