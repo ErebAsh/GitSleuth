@@ -1326,9 +1326,8 @@ small {
         display: none !important;
     }
 
-    .github-btn {
-        padding: 0.45rem 0.85rem;
-        font-size: 0.8rem;
+    .nav-actions .github-btn {
+        display: none !important;
     }
 
     /* Hero Section */
@@ -1658,11 +1657,6 @@ small {
     .nav-actions .cta-primary-btn {
         padding: 0.38rem 0.75rem !important;
         font-size: 0.75rem !important;
-    }
-
-    .github-btn {
-        padding: 0.38rem 0.65rem;
-        font-size: 0.75rem;
     }
 
     .hero-headline {
