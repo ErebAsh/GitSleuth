@@ -46,22 +46,19 @@ document.addEventListener('DOMContentLoaded', () => {
     let tubesApp = null;
 
     // Palette generators for vibrant glowing neon combinations
+    // Palette generators for Nordic Frost & Phosphor Teal theme
     const neonPalettes = [
         {
-            tubes: ["#38bdf8", "#a855f7", "#22c55e"],
-            lights: ["#83f36e", "#fe8a2e", "#ff008a", "#60aed5"]
+            tubes: ["#2dd4bf", "#38bdf8", "#818cf8"],
+            lights: ["#14b8a6", "#38bdf8", "#0284c7", "#34d399"]
         },
         {
-            tubes: ["#f43f5e", "#fb923c", "#38bdf8"],
-            lights: ["#f43f5e", "#06b6d4", "#a855f7", "#3b82f6"]
+            tubes: ["#06b6d4", "#2dd4bf", "#f8fafc"],
+            lights: ["#2dd4bf", "#0ea5e9", "#6366f1", "#10b981"]
         },
         {
-            tubes: ["#00f2fe", "#4facfe", "#000"],
-            lights: ["#00f2fe", "#4facfe", "#ff0844", "#ffb199"]
-        },
-        {
-            tubes: ["#f967fb", "#53bc28", "#6958d5"],
-            lights: ["#83f36e", "#fe8a2e", "#ff008a", "#60aed5"]
+            tubes: ["#38bdf8", "#818cf8", "#34d399"],
+            lights: ["#38bdf8", "#2dd4bf", "#a78bfa", "#38bdf8"]
         }
     ];
 
