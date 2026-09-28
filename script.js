@@ -45,20 +45,19 @@ document.addEventListener('DOMContentLoaded', () => {
     const randomizeNeonBtn = document.getElementById('randomize-neon-btn');
     let tubesApp = null;
 
-    // Palette generators for vibrant glowing neon combinations
-    // Palette generators for Nordic Frost & Phosphor Teal theme
+    // Palette generators for Pure Obsidian & Electric Cyan theme
     const neonPalettes = [
         {
-            tubes: ["#2dd4bf", "#38bdf8", "#818cf8"],
-            lights: ["#14b8a6", "#38bdf8", "#0284c7", "#34d399"]
+            tubes: ["#00f2fe", "#0072ff", "#ffffff"],
+            lights: ["#00f2fe", "#38bdf8", "#0072ff", "#a855f7"]
         },
         {
-            tubes: ["#06b6d4", "#2dd4bf", "#f8fafc"],
-            lights: ["#2dd4bf", "#0ea5e9", "#6366f1", "#10b981"]
+            tubes: ["#38bdf8", "#00f2fe", "#10b981"],
+            lights: ["#00f2fe", "#60a5fa", "#3b82f6", "#00f2fe"]
         },
         {
-            tubes: ["#38bdf8", "#818cf8", "#34d399"],
-            lights: ["#38bdf8", "#2dd4bf", "#a78bfa", "#38bdf8"]
+            tubes: ["#00f2fe", "#a855f7", "#ffffff"],
+            lights: ["#00f2fe", "#c084fc", "#38bdf8", "#0072ff"]
         }
     ];
 
