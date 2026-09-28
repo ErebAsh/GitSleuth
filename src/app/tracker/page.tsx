@@ -22,12 +22,25 @@ export default function TrackerPage() {
   const resultsRef = useRef<HTMLDivElement>(null);
   const loadMoreRef = useRef<HTMLDivElement>(null);
 
+  useEffect(() => {
+    document.title = 'Search Workspace — GitHub Contributor Activity | GitSleuth';
+    const metaDesc = document.querySelector('meta[name="description"]');
+    if (metaDesc) {
+      metaDesc.setAttribute(
+        'content',
+        'Search any GitHub username to inspect exact creation, merge, and closing timestamps with millisecond precision directly from official GitHub REST v3 API.'
+      );
+    }
+  }, []);
+
   const handleSearch = async (params: SearchParams) => {
     setIsLoading(true);
     setError(null);
     setHasSearched(true);
     setCurrentParams(params);
     setPage(1);
+
+    document.title = `Activity for @${params.username} — GitSleuth`;
 
     try {
       const data = await fetchGitHubActivity({

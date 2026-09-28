@@ -333,7 +333,11 @@ body {
   transition: 0.3s;
 }
 
-/* Layout */
+/* Layout & Section Scroll Positioning */
+section[id] {
+  scroll-margin-top: 80px;
+}
+
 .app-layout {
   position: relative;
   z-index: 1;

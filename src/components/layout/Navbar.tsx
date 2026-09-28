@@ -1,42 +1,125 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { updatePageSEO, updateUrlHash } from '@/lib/seo';
 
 export default function Navbar() {
   const pathname = usePathname();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [activeSection, setActiveSection] = useState('home');
+  const lastActiveSectionRef = useRef<string>('home');
 
   const isTracker = pathname === '/tracker';
 
   const closeMenu = () => setMobileMenuOpen(false);
 
+  const handleNavClick = (sectionId: string) => {
+    closeMenu();
+    lastActiveSectionRef.current = sectionId;
+    setActiveSection(sectionId);
+    updateUrlHash(sectionId);
+    updatePageSEO(sectionId);
+  };
+
   useEffect(() => {
     if (isTracker) return;
 
-    const handleScroll = () => {
-      const scrollY = window.pageYOffset + 120;
-      const sectionIds = ['home', 'features', 'tracker', 'privacy', 'support'];
+    const sectionIds = ['home', 'features', 'tracker', 'privacy', 'support'];
+    let ticking = false;
 
-      for (const id of sectionIds) {
-        const el = document.getElementById(id);
-        if (el) {
-          const top = el.offsetTop;
-          const height = el.offsetHeight;
-          if (scrollY >= top && scrollY < top + height) {
-            setActiveSection(id);
-            break;
+    const handleScroll = () => {
+      const scrollY = window.scrollY || window.pageYOffset;
+      const isNearBottom =
+        window.innerHeight + scrollY >= document.documentElement.scrollHeight - 70;
+
+      let current = 'home';
+
+      if (isNearBottom) {
+        current = 'support';
+      } else if (scrollY < 120) {
+        current = 'home';
+      } else {
+        const activationPoint = scrollY + 180;
+        for (const id of sectionIds) {
+          const el = document.getElementById(id);
+          if (el) {
+            const top = el.getBoundingClientRect().top + scrollY;
+            const height = el.offsetHeight;
+            if (activationPoint >= top && activationPoint < top + height) {
+              current = id;
+              break;
+            }
           }
+        }
+      }
+
+      if (current !== lastActiveSectionRef.current) {
+        lastActiveSectionRef.current = current;
+        setActiveSection(current);
+        updateUrlHash(current);
+        updatePageSEO(current);
+      }
+    };
+
+    const onScroll = () => {
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          handleScroll();
+          ticking = false;
+        });
+        ticking = true;
+      }
+    };
+
+    window.addEventListener('scroll', onScroll, { passive: true });
+    handleScroll();
+
+    return () => window.removeEventListener('scroll', onScroll);
+  }, [isTracker]);
+
+  // Handle direct deep-linking on initial mount (e.g. /#features, /#privacy)
+  useEffect(() => {
+    if (isTracker) return;
+
+    const hash = window.location.hash.replace('#', '');
+    const sectionIds = ['home', 'features', 'tracker', 'privacy', 'support'];
+
+    if (hash && sectionIds.includes(hash)) {
+      lastActiveSectionRef.current = hash;
+      setActiveSection(hash);
+      updatePageSEO(hash);
+
+      const targetEl = document.getElementById(hash);
+      if (targetEl) {
+        setTimeout(() => {
+          targetEl.scrollIntoView({ behavior: 'smooth' });
+        }, 120);
+      }
+    }
+  }, [isTracker]);
+
+  // Handle browser Back / Forward buttons (hashchange event)
+  useEffect(() => {
+    if (isTracker) return;
+
+    const handleHashChange = () => {
+      const hash = window.location.hash.replace('#', '') || 'home';
+      const sectionIds = ['home', 'features', 'tracker', 'privacy', 'support'];
+      if (sectionIds.includes(hash)) {
+        lastActiveSectionRef.current = hash;
+        setActiveSection(hash);
+        updatePageSEO(hash);
+        const targetEl = document.getElementById(hash);
+        if (targetEl) {
+          targetEl.scrollIntoView({ behavior: 'smooth' });
         }
       }
     };
 
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    handleScroll();
-
-    return () => window.removeEventListener('scroll', handleScroll);
+    window.addEventListener('hashchange', handleHashChange);
+    return () => window.removeEventListener('hashchange', handleHashChange);
   }, [isTracker]);
 
   return (
@@ -56,7 +139,7 @@ export default function Navbar() {
             <a
               href="#home"
               className={`nav-link ${activeSection === 'home' ? 'active' : ''}`}
-              onClick={closeMenu}
+              onClick={() => handleNavClick('home')}
             >
               Home
             </a>
@@ -70,7 +153,7 @@ export default function Navbar() {
             <a
               href="#features"
               className={`nav-link ${activeSection === 'features' ? 'active' : ''}`}
-              onClick={closeMenu}
+              onClick={() => handleNavClick('features')}
             >
               Features
             </a>
@@ -84,7 +167,7 @@ export default function Navbar() {
             <a
               href="#tracker"
               className={`nav-link ${activeSection === 'tracker' ? 'active' : ''}`}
-              onClick={closeMenu}
+              onClick={() => handleNavClick('tracker')}
             >
               Tracker
             </a>
@@ -98,7 +181,7 @@ export default function Navbar() {
             <a
               href="#privacy"
               className={`nav-link ${activeSection === 'privacy' ? 'active' : ''}`}
-              onClick={closeMenu}
+              onClick={() => handleNavClick('privacy')}
             >
               Privacy &amp; API
             </a>
@@ -112,7 +195,7 @@ export default function Navbar() {
             <a
               href="#support"
               className={`nav-link ${activeSection === 'support' ? 'active' : ''}`}
-              onClick={closeMenu}
+              onClick={() => handleNavClick('support')}
             >
               Support
             </a>
