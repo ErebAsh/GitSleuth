@@ -121,8 +121,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Trigger randomization when clicking anywhere on background/hero
     document.addEventListener('click', (e) => {
-        // Avoid intercepting inputs, buttons, links, or results cards
-        if (!e.target.closest('input, select, button, a, form, .timeline-item, .glass-panel, .nav-links')) {
+        // Only trigger within the hero area and avoid intercepting inputs, buttons, links, or cards
+        if (window.scrollY < 850 && !e.target.closest('input, select, button, a, form, .timeline-item, .glass-panel, .nav-links')) {
             randomizeColors();
         }
     });
